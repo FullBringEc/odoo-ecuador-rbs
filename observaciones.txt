@@ -1,0 +1,48 @@
+observaciones
+*	Los clientes actualmente se crean con cuentas erroneas por defecto, hay que cambiar a cuentas por cobrar y cuentas por pagar, sino las facturas no se crean correctamente desde el punto de venta y ademas se pagan directamente, quien sabe porque
+*	en el archivo l10n_ec_authorisation/models/authorisation.py se cambio el metodo action_number por este
+
+    @api.one  			------------------------- cambio de multi a one
+    def action_number(self):
+        # TODO: ver donde incluir el metodo de numeracion
+        self.ensure_one()
+        if self.type not in ['out_invoice', 'liq_purchase', 'out_refund']:
+            return
+        number = self.internal_inv_number
+        if not self.auth_inv_id:
+            # asegura la autorizacion en el objeto
+            self._onchange_partner_id()
+            self._onchange_journal_id()  		---------------------- se agrego esta funcion
+        if not number:
+            sequence = self.auth_inv_id.sequence_id
+
+            # raise UserError(str(self.state))  # noqa
+            number = sequence.next_by_id()
+        self.write({'reference': number, 'internal_inv_number': number})
+
+*   en el archivo l10n_ec_tax/view/views.xml se agrego esta vista
+
+     <record id="view_account_invoice_tax_base_form" model="ir.ui.view">
+            <field name="name">account.invoice.authoris.form</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='tax_line_ids']//tree//field[@name='account_analytic_id']" position="after">
+                    <field name='base'/>            
+                </xpath>
+
+            </field>
+        </record>
+
+*  en el archivo l10n_ec_withholding/models/withholding.py se modifico la linea 203
+    if days.days not in range(0, 6):   el rango de dias va desde el dia de la factura hasta cinco dias despues
+        raise ValidationError(utils.CODE701)  # noqa   el codigo se cambio de utils.CODE_701 a -- utils.CODE701
+
+
+*-POS
+    PARA FACTURAR SE HAY QUE PONER UNA CUENTA DE INGRESO Y DE GASTO EN LA CATEGORIA DEL PRODUCTO
+*   Que es una nota de credito
+    -   Como se crea
+    -   Lleva impuestos y retenciones como la factura
+
+

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+  <data>
+
+    <record id="view_account_journal_epayment_form" model="ir.ui.view">
+        <field name="name">account.journal.epayment.form</field>
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="account.view_account_journal_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='type']" position="after">
+                <field name="at_least_one_inbound"  invisible="1"/>
+                <field name="at_least_one_outbound" invisible="1"/>
+                <field name="epayment_id" widget="selection" 
+                	attrs="{'invisible': [
+                		'|',
+	                	'&amp;',
+                		('at_least_one_inbound','=',False),
+                		('at_least_one_outbound','=',False),
+                		('type', 'not in', ('bank', 'cash'))
+                	],
+                	'required': [
+                		'&amp;',
+	                	'|',
+                		('at_least_one_inbound','=',True),
+                		('at_least_one_outbound','=',True),
+                		('type', 'in', ('bank', 'cash'))
+                	]
+                	}" 
+                	/>
+
+                	<!-- attrs="{'invisible': [('state', '=', 'draft')]}"/> -->
+            </xpath>
+        </field>
+    </record>
+</data>
+</openerp>

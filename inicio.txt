@@ -1,0 +1,1 @@
+python C:\Python27\Lib\site-packages\odoo-10.0.post20171105-py2.7.egg\odoo-bin.py --config=C:\Python27\Lib\site-packages\odoo-10.0.post20171105-py2.7.egg\odoo-config.conf
