@@ -9,7 +9,12 @@ from openerp.exceptions import Warning as UserError
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
 
+class AccountEpayment(models.Model):
+    _name = 'account.epayment'
 
+    code = fields.Char('Código')
+    name = fields.Char('Forma de Pago')
+    
 class AccountJournal(models.Model):
 	_inherit = 'account.journal'
 
