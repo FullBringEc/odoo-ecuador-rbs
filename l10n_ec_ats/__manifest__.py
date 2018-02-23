@@ -12,6 +12,7 @@
     'data': [
         'wizard/withholding_wizard.xml',
         'views/account_journal.xml',
+        'data/account.epayment.csv',
         # 'security/ir.model.access.csv'
     ],
     'depends': [
