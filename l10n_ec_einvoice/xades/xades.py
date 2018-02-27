@@ -85,5 +85,4 @@ class Xades(object):
             stderr=subprocess.STDOUT
         )
         res = p.communicate()
-        raise UserError(str(res[0]))
         return res[0]
