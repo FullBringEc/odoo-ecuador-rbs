@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <factura id="comprobante" version="1.1.0">
   <infoTributaria>
     <ambiente>{{ ambiente }}</ambiente>
@@ -15,7 +15,10 @@
   </infoTributaria>
   <infoFactura>
     <fechaEmision>{{ fechaEmision }}</fechaEmision> {# dd/mm/aaaa #}
-    <contribuyenteEspecial>{{ contribuyenteEspecial }}</contribuyenteEspecial>
+    <dirEstablecimiento>{{ dirEstablecimiento }}</dirEstablecimiento>
+    {% if contribuyenteEspecial %}
+      <contribuyenteEspecial>{{ contribuyenteEspecial }}</contribuyenteEspecial>
+    {% endif %}
     <obligadoContabilidad>{{ obligadoContabilidad }}</obligadoContabilidad>
     <tipoIdentificacionComprador>{{ tipoIdentificacionComprador }}</tipoIdentificacionComprador>
     <razonSocialComprador>{{ razonSocialComprador }}</razonSocialComprador>

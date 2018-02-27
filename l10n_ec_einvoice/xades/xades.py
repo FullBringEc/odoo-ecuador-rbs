@@ -68,6 +68,7 @@ class Xades(object):
         ]
         try:
             logging.info('Probando comando de firma digital')
+            
             subprocess.check_output(command)
         except subprocess.CalledProcessError as e:
             returncode = e.returncode

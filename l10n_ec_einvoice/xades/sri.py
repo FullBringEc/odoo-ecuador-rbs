@@ -64,18 +64,24 @@ class DocumentXML(object):
         """
         Metodo que envia el XML al WS
         """
-        self.logger.info('Enviando documento para recepcion SRI')
+
+        document2 = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<factura id="comprobante" version="1.1.0">\n  <infoTributaria>\n    <ambiente>1</ambiente>\n    <tipoEmision>1</tipoEmision>\n    <razonSocial>My Company</razonSocial>\n    <nombreComercial>My Company</nombreComercial>\n    <ruc>1315298404001</ruc>\n    <claveAcceso>2202201801131529840400110010010000000010000003719</claveAcceso>\n    <codDoc>01</codDoc>\n    <estab>001</estab>\n    <ptoEmi>001</ptoEmi>\n    <secuencial>000000001</secuencial>\n    <dirMatriz>Cludadela universitaria</dirMatriz>\n  </infoTributaria>\n  <infoFactura>\n    <fechaEmision>22/02/2018</fechaEmision> \n    <dirEstablecimiento>Cludadela universitaria</dirEstablecimiento>\n    \n    <obligadoContabilidad>SI</obligadoContabilidad>\n    <tipoIdentificacionComprador>06</tipoIdentificacionComprador>\n    <razonSocialComprador>CONSUMIDOR FINAL</razonSocialComprador>\n    <identificacionComprador>9999999999</identificacionComprador>\n    <totalSinImpuestos>1.00</totalSinImpuestos>\n    <totalDescuento>0.0</totalDescuento>\n    <totalConImpuestos>\n      \n      <totalImpuesto>\n        <codigo>2</codigo>\n        <codigoPorcentaje>3</codigoPorcentaje>\n        <baseImponible>1.00</baseImponible>\n        <tarifa>14</tarifa>\n        <valor>0.14</valor>\n      </totalImpuesto>\n      \n    </totalConImpuestos>\n    \n    <propina>0.00</propina>\n    <importeTotal>1.14</importeTotal>\n    <moneda>DOLAR</moneda>\n    <pagos>\n        <pago>\n            <formaPago>20</formaPago>\n            <total>1.14</total>\n        </pago>\n    </pagos>\n    <valorRetIva>0.00</valorRetIva>\n    <valorRetRenta>0.00</valorRetRenta>\n  </infoFactura>\n  <detalles>\n    \n    <detalle>\n      <codigoPrincipal>001</codigoPrincipal>\n      <descripcion>Pollo a la florentina</descripcion>\n      <cantidad>1.000000</cantidad>\n      <precioUnitario>1.000000</precioUnitario>\n      <descuento>0.00</descuento>\n      <precioTotalSinImpuesto>1.00</precioTotalSinImpuesto>\n      <impuestos>\n        \n        <impuesto>\n          <codigo>2</codigo>\n          <codigoPorcentaje>3</codigoPorcentaje>\n          <tarifa>14</tarifa>\n          <baseImponible>1.00</baseImponible>\n          <valor>14.00</valor>\n        </impuesto>\n        \n      </impuestos>\n    </detalle>\n    \n  </detalles>\n</factura>
+                    """
+        self.logger.info('Probando comando de firma digital'+str(document))
+        self.logger.info('Enviando documento para recepcion SRI2')
+        
         buf = StringIO()
         buf.write(document)
         buffer_xml = base64.encodestring(buf.getvalue())
-
+        
         if not utils.check_service('prueba'):
             # TODO: implementar modo offline
             raise 'Error SRI', 'Servicio SRI no disponible.'
 
         client = Client(SriService.get_active_ws()[0])
         result = client.service.validarComprobante(buffer_xml)
-        self.logger.info('Estado de respuesta documento: %s' % result.estado)
+
+        self.logger.info('Estado de respuesta documento: %s' % result)
         errores = []
         if result.estado == 'RECIBIDA':
             return True, errores
@@ -118,6 +124,13 @@ class SriService(object):
     __WS_TEST_AUTH = 'https://celcer.sri.gob.ec/comprobantes-electronicos-ws/AutorizacionComprobantes?wsdl'  # noqa
     __WS_RECEIV = 'https://cel.sri.gob.ec/comprobantes-electronicos-ws/RecepcionComprobantes?wsdl'  # noqa
     __WS_AUTH = 'https://cel.sri.gob.ec/comprobantes-electronicos-ws/AutorizacionComprobantes?wsdl'  # noqa
+
+
+    __WS_TEST_RECEIV = 'https://celcer.sri.gob.ec/comprobantes-electronicos-ws/RecepcionComprobantesOffline?wsdl'  # noqa
+    __WS_TEST_AUTH = 'https://celcer.sri.gob.ec/comprobantes-electronicos-ws/AutorizacionComprobantesOffline?wsdl'  # noqa
+    __WS_RECEIV = 'https://cel.sri.gob.ec/comprobantes-electronicos-ws/RecepcionComprobantesOffline?wsdl'  # noqa
+    __WS_AUTH = 'https://cel.sri.gob.ec/comprobantes-electronicos-ws/AutorizacionComprobantesOffline?wsdl'  # noqa
+    # __WS_AUTH = 'https://cel.sri.gob.ec/comprobantes-electronicos-ws/AutorizacionComprobantes?wsdl'  # noqa
 
     __WS_TESTING = (__WS_TEST_RECEIV, __WS_TEST_AUTH)
     __WS_PROD = (__WS_RECEIV, __WS_AUTH)
