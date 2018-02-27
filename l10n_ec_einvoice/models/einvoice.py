@@ -24,7 +24,7 @@ class AccountInvoice(models.Model):
         'out_invoice': 'out_invoice.xml',
         'out_refund': 'out_refund.xml'
     }
-    ride = fields.Binary(string = 'Archivo',filters='*.pdf')
+
     def _info_factura(self, invoice):
         """
         """

@@ -24,9 +24,9 @@ class pos_oder_heredado(models.Model):
 
         # _logger = logging.getLogger("pedidos normales"+str(pos_order_ids))
 
-        # for pos_order_ids_line in pos_order_ids:
+        for pos_order_ids_line in pos_order_ids:
 
-        #     pos_order_ids_line.invoice_id.action_generate_einvoice()
+            pos_order_ids_line.invoice_id.action_generate_einvoice()
 
         # pos_order_refund_ids = self.with_context(cron=True).search([
         #     ('state', '=', 'paid'), ('amount_total', '<', 0)

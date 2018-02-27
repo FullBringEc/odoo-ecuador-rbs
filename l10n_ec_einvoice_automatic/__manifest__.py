@@ -8,7 +8,7 @@
     'website': 'http://www.facebook.com/RubikSoft15.com',
     "description": """Modulo revisa las ordenes en el punto de venta y las factura""",
 
-    "depends": ['point_of_sale'],
+    "depends": ['point_of_sale', 'l10n_ec_einvoice'],
     "data": [
 
         'einvoice_cron/einvoice_cron.xml',

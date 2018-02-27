@@ -4,6 +4,8 @@ import base64
 import os
 import subprocess
 import logging
+from odoo.exceptions import UserError
+_logger = logging.getLogger(__name__)
 
 
 class CheckDigit(object):
@@ -55,6 +57,7 @@ class Xades(object):
         TODO: Revisar return
         """
         xml_str = xml_document.encode('utf-8')
+        
         JAR_PATH = 'firma/firmaXadesBes.jar'
         JAVA_CMD = 'java'
         firma_path = os.path.join(os.path.dirname(__file__), JAR_PATH)
@@ -82,4 +85,5 @@ class Xades(object):
             stderr=subprocess.STDOUT
         )
         res = p.communicate()
+        raise UserError(str(res[0]))
         return res[0]
