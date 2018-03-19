@@ -47,6 +47,19 @@
     <propina>0.00</propina>
     <importeTotal>{{ importeTotal }}</importeTotal>
     <moneda>DOLAR</moneda>
+
+    {% if pagos: %}
+	<pagos>
+		{% for line in pagos: %}
+		<!-- <formaPago>{{line.formaPago}}</formaPago>
+ -->
+		<pago>
+            <formaPago>{{ line.formaPago }}</formaPago>
+            <total>{{ line.importeTotal }}</total>
+        </pago>
+		{% endfor %}
+	</pagos>
+	{% endif %}
     <pagos>
         <pago>
             <formaPago>{{ formaPago }}</formaPago>
