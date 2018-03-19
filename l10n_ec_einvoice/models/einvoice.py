@@ -13,7 +13,7 @@ from openerp.exceptions import Warning as UserError
 from . import utils
 from ..xades.sri import DocumentXML
 from ..xades.xades import Xades
-
+import sys
 
 class AccountInvoice(models.Model):
 
@@ -37,7 +37,7 @@ class AccountInvoice(models.Model):
         partner = invoice.partner_id
         infoFactura = {
             'fechaEmision': fix_date(invoice.date_invoice),
-            'dirEstablecimiento': company.street2,
+            'dirEstablecimiento': company.street,
             'obligadoContabilidad': 'SI',
             'tipoIdentificacionComprador': utils.tipoIdentificacion[partner.type_identifier],  # noqa
             'razonSocialComprador': partner.name,
@@ -54,8 +54,8 @@ class AccountInvoice(models.Model):
         if company.company_registry:
             infoFactura.update({'contribuyenteEspecial':
                                 company.company_registry})
-        else:
-            raise UserError('No ha determinado si es contribuyente especial.')
+        # else:
+            # raise UserError('No ha determinado si es contribuyente especial.')
 
         totalConImpuestos = []
         for tax in invoice.tax_line_ids:
@@ -189,35 +189,42 @@ class AccountInvoice(models.Model):
             file_pk12 = obj.company_id.electronic_signature
             password = obj.company_id.password_electronic_signature
             signed_document = xades.sign(einvoice, file_pk12, password)
-            ok, errores = inv_xml.send_receipt(signed_document)
-            if not ok:
-                raise UserError(errores)
-            auth, m = inv_xml.request_authorization(access_key)
-            if not auth:
-                msg = ' '.join(list(itertools.chain(*m)))
-                raise UserError(msg)
-            auth_einvoice = self.render_authorized_einvoice(auth)
-            self.update_document(auth, [access_key, emission_code])
-            attach = self.add_attachment(auth_einvoice, auth)
-            message = """
-            DOCUMENTO ELECTRONICO GENERADO <br><br>
-            CLAVE DE ACCESO: %s <br>
-            NUMERO DE AUTORIZACION %s <br>
-            FECHA AUTORIZACION: %s <br>
-            ESTADO DE AUTORIZACION: %s <br>
-            AMBIENTE: %s <br>
-            """ % (
-                self.clave_acceso,
-                self.numero_autorizacion,
-                self.fecha_autorizacion,
-                self.estado_autorizacion,
-                self.ambiente
-            )
-            self.message_post(body=message)
-            self.send_document(
-                attachments=[a.id for a in attach],
-                tmpl='l10n_ec_einvoice.email_template_einvoice'
-            )
+            self.update_document_before([access_key, emission_code])
+
+            try:
+                ok, errores = inv_xml.send_receipt(signed_document)
+                if not ok:
+                    raise UserError(errores)
+                auth, m = inv_xml.request_authorization(access_key)
+                if not auth:
+                    msg = ' '.join(list(itertools.chain(*m)))
+                    raise UserError(msg)
+                auth_einvoice = self.render_authorized_einvoice(auth)
+                self.update_document(auth, [access_key, emission_code])
+                attach = self.add_attachment(auth_einvoice, auth)
+                message = """
+                DOCUMENTO ELECTRONICO GENERADO <br><br>
+                CLAVE DE ACCESO: %s <br>
+                NUMERO DE AUTORIZACION %s <br>
+                FECHA AUTORIZACION: %s <br>
+                ESTADO DE AUTORIZACION: %s <br>
+                AMBIENTE: %s <br>
+                """ % (
+                    self.clave_acceso,
+                    self.numero_autorizacion,
+                    self.fecha_autorizacion,
+                    self.estado_autorizacion,
+                    self.ambiente
+                )
+                self.message_post(body=message)
+                self.send_document(
+                    attachments=[a.id for a in attach],
+                    tmpl='l10n_ec_einvoice.email_template_einvoice'
+                )
+                self.errores = ""
+            except UserError, e:
+                self.errores = str(e)
+                # raise
 
     @api.multi
     def invoice_print(self):

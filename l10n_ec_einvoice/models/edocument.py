@@ -36,7 +36,7 @@ class Edocument(models.AbstractModel):
     )
     numero_autorizacion = fields.Char(
         'Número de Autorización',
-        size=37,
+        size=49,
         readonly=True
     )
     estado_autorizacion = fields.Char(
@@ -51,6 +51,11 @@ class Edocument(models.AbstractModel):
     ambiente = fields.Char(
         'Ambiente',
         size=64,
+        readonly=True
+    )
+    errores = fields.Char(
+        'Errores',
+        # size=64,
         readonly=True
     )
     autorizado_sri = fields.Boolean('¿Autorizado SRI?', readonly=True)
@@ -176,6 +181,18 @@ class Edocument(models.AbstractModel):
             'ambiente': auth.ambiente,
             'fecha_autorizacion': fecha,  # noqa
             'autorizado_sri': True,
+            'clave_acceso': codes[0],
+            'emission_code': codes[1]
+        })
+    @api.multi
+    def update_document_before(self, codes):
+        # fecha = auth.fechaAutorizacion.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+        self.write({
+            'numero_autorizacion': codes[0],
+            # 'estado_autorizacion': auth.estado,
+            # 'ambiente': auth.ambiente,
+            # 'fecha_autorizacion': fecha,  # noqa
+            'autorizado_sri': False,
             'clave_acceso': codes[0],
             'emission_code': codes[1]
         })

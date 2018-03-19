@@ -34,8 +34,8 @@
                         <field name="error_data" filename="fcname_errores" readonly="True"/>
                     </group>
                     <footer class="oe_right">
-                        <button icon="gtk-cancel" class="oe_link" special="cancel" states="choose" string="Cancelar"/>
-                        <button icon="gtk-execute" name="act_export_ats" states="choose" string="Exportar XML" type="object"/>
+                        <button icon="fa-reply" class="oe_link" special="cancel" states="choose" string="Cancelar"/>
+                        <button icon="fa-check" name="act_export_ats" states="choose" string="Exportar XML" type="object"/>
                         <button icon="gtk-ok" states="export" string="Cerrar" class="oe_link" special="cancel"/>
                     </footer>
                 </form>
